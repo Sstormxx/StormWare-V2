@@ -273,7 +273,7 @@ local RunService = game:GetService("RunService")
 -- SETTINGS
 local aimbotEnabled = false
 local rightClickHeld = false
-local aimPartName = "HumanoidRootPart"
+local aimPartName = "Head"
 local maxDistance = 1000
 local fov = 70
 local smoothness = 0.15
