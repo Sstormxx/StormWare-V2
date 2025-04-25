@@ -276,7 +276,7 @@ local rightClickHeld = false
 local aimPartName = "Head"
 local maxDistance = 1000
 local fov = 70
-local smoothness = 0.15
+local smoothness = 1
 local targetIndicator = nil
 local fovCircle = nil
 
