@@ -403,7 +403,6 @@ local Toggle = AimAssistTab:CreateToggle({
    CurrentValue = false,
    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
    Callback = function(Value)
-        -- Import necessary libraries
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -431,7 +430,10 @@ local function silentAim(target)
 end
 
 -- Toggle key function
-UserInputService.InputBegan:Connect(function(input)
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    -- Don't toggle if the player is typing in chat or a textbox
+    if gameProcessed or UserInputService:GetFocusedTextBox() then return end
+
     if input.KeyCode == Enum.KeyCode.E then -- 'E' key to toggle silent aim
         silentAimEnabled = not silentAimEnabled
         if silentAimEnabled then
@@ -452,8 +454,8 @@ while true do
 
         for _, player in pairs(Players:GetPlayers()) do
             if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                if not isOnSameTeam(LocalPlayer, player) then -- Check if they are not on the same team
-                    local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).magnitude
+                if not isOnSameTeam(LocalPlayer, player) then
+                    local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
                     if distance < closestDistance then
                         closestDistance = distance
                         closestTarget = player
@@ -467,6 +469,7 @@ while true do
         end
     end
 end
+
    end,
 })
 
