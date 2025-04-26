@@ -102,56 +102,48 @@ local Toggle = MainTab:CreateToggle({
    Name = "Noclip (B) ",
    CurrentValue = false,
    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-        local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
+    Callback = function(Value)
+ local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local UserInputService = game:GetService("UserInputService")
 
-local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
+        local player = Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
 
-local noclipEnabled = false
+        local noclipEnabled = false
 
--- Function to toggle collisions on all character parts
-local function setCollision(state)
-	for _, part in ipairs(character:GetDescendants()) do
-		if part:IsA("BasePart") then
-			part.CanCollide = not state
-		end
-	end
-end
+        -- This makes sure new characters also get noclip
+        player.CharacterAdded:Connect(function(char)
+            character = char
+            if noclipEnabled then
+                wait(1)
+                for _, part in ipairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end)
 
--- Re-apply character when respawned
-player.CharacterAdded:Connect(function(char)
-	character = char
-	char:WaitForChild("HumanoidRootPart")
-	if noclipEnabled then
-		wait(1) -- Wait for parts to load
-		setCollision(true)
-	end
-end)
+        -- Toggle noclip with the B key
+        UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if gameProcessed then return end
+            if input.KeyCode == Enum.KeyCode.B then
+                noclipEnabled = not noclipEnabled
+                print("Noclip is now:", noclipEnabled and "ON" or "OFF")
+            end
+        end)
 
--- Key press toggle
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-	if gameProcessed then return end
-
-	if input.KeyCode == Enum.KeyCode.B then
-		noclipEnabled = not noclipEnabled
-		setCollision(noclipEnabled)
-		print("Noclip:", noclipEnabled and "Enabled" or "Disabled")
-	end
-end)
-
--- Ensure parts stay non-collidable while noclip is on
-RunService.Stepped:Connect(function()
-	if noclipEnabled and character then
-		for _, part in ipairs(character:GetDescendants()) do
-			if part:IsA("BasePart") and part.CanCollide then
-				part.CanCollide = false
-			end
-		end
-	end
-end)
-
+        -- Constantly enforce no collision
+        RunService.Stepped:Connect(function()
+            if noclipEnabled and character then
+                for _, part in ipairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end)
    end,
 })
 
