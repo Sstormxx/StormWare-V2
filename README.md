@@ -1,3 +1,1 @@
-this script is still in beta so expect errors and bugs
-plus this is my 3rd ever script so it might not be good
-Universal StormWare Script
+very good basic script, adjusted to my own liking. this isnt really supposed to be a public script i just made it for myself. but if u got your hands on this script then congrats consider urself special
